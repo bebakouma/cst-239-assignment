@@ -8,6 +8,12 @@ Watch my full screencast demonstration here:
 
 ## How to Compile and Run
 
-```bash
+```
 javac -d out $(Get-ChildItem -Recurse src -Filter *.java).FullName
 java -cp out edu.gcu.storefront.StoreFrontApp
+```
+
+
+## Optional GitHub Repository
+You can also browse the source and documentation in my public GitHub repository:
+ https://github.com/bebakouma/cst-239-assignment/tree/master
