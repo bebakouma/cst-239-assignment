@@ -6,7 +6,7 @@ Watch my full screencast demonstration here:
 ## Click to watch on Loom : https://www.loom.com/share/e9a1f84eda3840a59b10f9c6df61f69d
 
 
-## How to Compile and Run
+##  How to Compile and Run
 
 ```
 javac -d out $(Get-ChildItem -Recurse src -Filter *.java).FullName
