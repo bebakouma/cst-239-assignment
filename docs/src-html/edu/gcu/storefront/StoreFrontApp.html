@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">package edu.gcu.storefront;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">import java.math.BigDecimal;</a>
+<span class="sourceLineNo">004</span><a id="line.4">import java.util.HashMap;</a>
+<span class="sourceLineNo">005</span><a id="line.5">import java.util.Map;</a>
+<span class="sourceLineNo">006</span><a id="line.6">import java.util.Scanner;</a>
+<span class="sourceLineNo">007</span><a id="line.7">import java.util.UUID;</a>
+<span class="sourceLineNo">008</span><a id="line.8"></a>
+<span class="sourceLineNo">009</span><a id="line.9">/**</a>
+<span class="sourceLineNo">010</span><a id="line.10"> * Command-line application that demonstrates usage of the store front system.</a>
+<span class="sourceLineNo">011</span><a id="line.11"> *</a>
+<span class="sourceLineNo">012</span><a id="line.12"> * &lt;p&gt;This demo initializes sample products, allows the user to interact with a store via</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * the console, and supports adding products to the cart, canceling a purchase,</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * or completing a checkout.&lt;/p&gt;</a>
+<span class="sourceLineNo">015</span><a id="line.15"> *</a>
+<span class="sourceLineNo">016</span><a id="line.16"> * &lt;p&gt;Build &amp; Run:&lt;/p&gt;</a>
+<span class="sourceLineNo">017</span><a id="line.17"> * &lt;pre&gt;{@code</a>
+<span class="sourceLineNo">018</span><a id="line.18"> * javac -d out $(find src -name "*.java")</a>
+<span class="sourceLineNo">019</span><a id="line.19"> * java  -cp out edu.gcu.storefront.StoreFrontApp</a>
+<span class="sourceLineNo">020</span><a id="line.20"> * }&lt;/pre&gt;</a>
+<span class="sourceLineNo">021</span><a id="line.21"> *</a>
+<span class="sourceLineNo">022</span><a id="line.22"> * @author Batossa</a>
+<span class="sourceLineNo">023</span><a id="line.23"> * @version 1.0</a>
+<span class="sourceLineNo">024</span><a id="line.24"> */</a>
+<span class="sourceLineNo">025</span><a id="line.25">public final class StoreFrontApp {</a>
+<span class="sourceLineNo">026</span><a id="line.26"></a>
+<span class="sourceLineNo">027</span><a id="line.27">    private StoreFrontApp() {}</a>
+<span class="sourceLineNo">028</span><a id="line.28"></a>
+<span class="sourceLineNo">029</span><a id="line.29">    public static void main(String[] args) {</a>
+<span class="sourceLineNo">030</span><a id="line.30"></a>
+<span class="sourceLineNo">031</span><a id="line.31">        // 1) Seed products</a>
+<span class="sourceLineNo">032</span><a id="line.32">        Map&lt;String, SalableProduct&gt; seed = new HashMap&lt;&gt;();</a>
+<span class="sourceLineNo">033</span><a id="line.33">        seed.put("A100", new SalableProduct("A100", "Notebook", "100-page spiraled notebook",</a>
+<span class="sourceLineNo">034</span><a id="line.34">                new BigDecimal("2.75"), 10));</a>
+<span class="sourceLineNo">035</span><a id="line.35">        seed.put("B200", new SalableProduct("B200", "Gel Pen", "Blue gel ink pen",</a>
+<span class="sourceLineNo">036</span><a id="line.36">                new BigDecimal("1.25"), 5));</a>
+<span class="sourceLineNo">037</span><a id="line.37">        seed.put("C300", new SalableProduct("C300", "Stapler", "Mini stapler",</a>
+<span class="sourceLineNo">038</span><a id="line.38">                new BigDecimal("4.95"), 3));</a>
+<span class="sourceLineNo">039</span><a id="line.39"></a>
+<span class="sourceLineNo">040</span><a id="line.40">        InventoryManager inv = new InventoryManager();</a>
+<span class="sourceLineNo">041</span><a id="line.41">        inv.initStore(seed);</a>
+<span class="sourceLineNo">042</span><a id="line.42">        StoreFront store = new StoreFront(inv);</a>
+<span class="sourceLineNo">043</span><a id="line.43"></a>
+<span class="sourceLineNo">044</span><a id="line.44">        // 2) Simple CLI loop</a>
+<span class="sourceLineNo">045</span><a id="line.45">        UUID session = store.startSession();</a>
+<span class="sourceLineNo">046</span><a id="line.46">        System.out.println("=== Welcome to the Store Front ===");</a>
+<span class="sourceLineNo">047</span><a id="line.47">        try (Scanner sc = new Scanner(System.in)) {</a>
+<span class="sourceLineNo">048</span><a id="line.48">            boolean running = true;</a>
+<span class="sourceLineNo">049</span><a id="line.49">            while (running) {</a>
+<span class="sourceLineNo">050</span><a id="line.50">                System.out.println("\nCatalog:");</a>
+<span class="sourceLineNo">051</span><a id="line.51">                for (SalableProduct p : inv.viewCatalog().values()) {</a>
+<span class="sourceLineNo">052</span><a id="line.52">                    System.out.println(p);</a>
+<span class="sourceLineNo">053</span><a id="line.53">                }</a>
+<span class="sourceLineNo">054</span><a id="line.54"></a>
+<span class="sourceLineNo">055</span><a id="line.55">                System.out.print(</a>
+<span class="sourceLineNo">056</span><a id="line.56">                    "\nOptions:\n" +</a>
+<span class="sourceLineNo">057</span><a id="line.57">                    "1) Add to cart\n" +</a>
+<span class="sourceLineNo">058</span><a id="line.58">                    "2) Cancel purchase\n" +</a>
+<span class="sourceLineNo">059</span><a id="line.59">                    "3) Checkout\n" +</a>
+<span class="sourceLineNo">060</span><a id="line.60">                    "0) Exit\n" +</a>
+<span class="sourceLineNo">061</span><a id="line.61">                    "&gt; "</a>
+<span class="sourceLineNo">062</span><a id="line.62">                );</a>
+<span class="sourceLineNo">063</span><a id="line.63"></a>
+<span class="sourceLineNo">064</span><a id="line.64">                String input = sc.nextLine().trim();</a>
+<span class="sourceLineNo">065</span><a id="line.65">                switch (input) {</a>
+<span class="sourceLineNo">066</span><a id="line.66">                    case "1":</a>
+<span class="sourceLineNo">067</span><a id="line.67">                        System.out.print("Enter product ID: ");</a>
+<span class="sourceLineNo">068</span><a id="line.68">                        String id = sc.nextLine().trim();</a>
+<span class="sourceLineNo">069</span><a id="line.69">                        System.out.print("Qty: ");</a>
+<span class="sourceLineNo">070</span><a id="line.70">                        int qty = Integer.parseInt(sc.nextLine().trim());</a>
+<span class="sourceLineNo">071</span><a id="line.71">                        boolean ok = store.addToCart(session, id, qty);</a>
+<span class="sourceLineNo">072</span><a id="line.72">                        System.out.println(ok ? "[OK] Added!" : "[X] Not enough stock.");</a>
+<span class="sourceLineNo">073</span><a id="line.73">                        break;</a>
+<span class="sourceLineNo">074</span><a id="line.74"></a>
+<span class="sourceLineNo">075</span><a id="line.75">                    case "2":</a>
+<span class="sourceLineNo">076</span><a id="line.76">                        store.cancelSession(session);</a>
+<span class="sourceLineNo">077</span><a id="line.77">                        session = store.startSession(); // fresh cart</a>
+<span class="sourceLineNo">078</span><a id="line.78">                        System.out.println("Cart cleared, reservations released.");</a>
+<span class="sourceLineNo">079</span><a id="line.79">                        break;</a>
+<span class="sourceLineNo">080</span><a id="line.80"></a>
+<span class="sourceLineNo">081</span><a id="line.81">                    case "3":</a>
+<span class="sourceLineNo">082</span><a id="line.82">                        BigDecimal total = store.checkout(session);</a>
+<span class="sourceLineNo">083</span><a id="line.83">                        System.out.println("Thank you! Total due = $" + total);</a>
+<span class="sourceLineNo">084</span><a id="line.84">                        running = false;</a>
+<span class="sourceLineNo">085</span><a id="line.85">                        break;</a>
+<span class="sourceLineNo">086</span><a id="line.86"></a>
+<span class="sourceLineNo">087</span><a id="line.87">                    case "0":</a>
+<span class="sourceLineNo">088</span><a id="line.88">                        store.cancelSession(session);</a>
+<span class="sourceLineNo">089</span><a id="line.89">                        running = false;</a>
+<span class="sourceLineNo">090</span><a id="line.90">                        break;</a>
+<span class="sourceLineNo">091</span><a id="line.91"></a>
+<span class="sourceLineNo">092</span><a id="line.92">                    default:</a>
+<span class="sourceLineNo">093</span><a id="line.93">                        System.out.println("Unknown choice.");</a>
+<span class="sourceLineNo">094</span><a id="line.94">                        break;</a>
+<span class="sourceLineNo">095</span><a id="line.95">                }</a>
+<span class="sourceLineNo">096</span><a id="line.96">            }</a>
+<span class="sourceLineNo">097</span><a id="line.97">        }</a>
+<span class="sourceLineNo">098</span><a id="line.98"></a>
+<span class="sourceLineNo">099</span><a id="line.99">        System.out.println("\nGoodbye!");</a>
+<span class="sourceLineNo">100</span><a id="line.100">    }</a>
+<span class="sourceLineNo">101</span><a id="line.101">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>
