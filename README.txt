@@ -16,4 +16,5 @@ java -cp out edu.gcu.storefront.StoreFrontApp
 
 ## Optional GitHub Repository
 You can also browse the source and documentation in my public GitHub repository:
- https://github.com/bebakouma/cst-239-assignment/tree/master
+https://github.com/bebakouma/cst-239-assignment/tree/main
+
